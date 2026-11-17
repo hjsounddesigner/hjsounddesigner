@@ -42,16 +42,40 @@
   </header>
 
   <main id="main">
-    <section class="hero">
-      <div class="wrap">
-        <p class="eyebrow reveal">Sound Design Portfolio</p>
-        <h1 class="reveal">Sound,<br><em>designed</em><br>with intent.</h1>
-        <p class="hero__lead reveal">TODO: 한 줄 소개를 여기에 적어주세요. (예: 게임·영상의 몰입감을 만드는 사운드 디자이너)</p>
-        <div class="hero__cta reveal">
-          <a class="btn btn--primary" href="works.html">View Works ↗</a>
-          <a class="btn" href="contact.html">Contact</a>
+    <section class="engine-hero" data-engine aria-labelledby="hero-title">
+      <canvas class="engine-canvas" aria-hidden="true"></canvas>
+      <div class="engine-fallback" aria-hidden="true"></div>
+      <div class="engine-grid" aria-hidden="true"></div>
+      <div class="engine-shade" aria-hidden="true"></div>
+      <div class="engine-flash" aria-hidden="true"></div>
+      <div class="engine-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+      <div class="engine-hud" aria-hidden="true">
+        <div class="hud__title"><span>Sound Engine</span><span>v1.0</span></div>
+        <div class="hud__row"><span>Status</span><b data-hud-state>BOOT</b></div>
+        <div class="hud__row"><span>RPM</span><b data-hud-rpm>0000</b></div>
+        <div class="hud__row"><span>Core</span><b data-hud-core>00.0%</b></div>
+        <div class="hud__bars">
+          <div class="hud__bar"><span>LOW</span><i data-hud-bar></i></div>
+          <div class="hud__bar"><span>MID</span><i data-hud-bar></i></div>
+          <div class="hud__bar"><span>HIGH</span><i data-hud-bar></i></div>
         </div>
-        <div class="wave" data-wave aria-hidden="true"></div>
+      </div>
+
+      <div class="engine-copy">
+        <p class="engine-copy__kicker"><span>Portfolio — 2026</span><span>Game Audio / Interactive Sound</span></p>
+        <h1 id="hero-title">Engineering<br><em>the sound.</em></h1>
+        <p class="engine-copy__lead">Crafting immersive audio experiences through sound design and technology.</p>
+        <div class="engine-copy__cta">
+          <a class="btn btn--primary" href="works.html">Explore Work ↗</a>
+          <span class="engine-copy__role">Sound Designer / Game Audio</span>
+        </div>
+      </div>
+
+      <div class="engine-meta" aria-hidden="true">
+        <p class="engine-meta__hint"><span class="pulse"></span>Click the core to ignite</p>
+        <p>Scroll to explore</p>
+        <p class="engine-meta__index"><b>01</b> — 04</p>
       </div>
     </section>
 
@@ -101,6 +125,13 @@
     </div>
   </footer>
 
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+  <script type="module" src="engine.js"></script>
   <script src="main.js" defer></script>
 </body>
 </html>

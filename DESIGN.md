@@ -48,3 +48,32 @@
 ## Favicon
 
 로고(`jun` + 소리 파동)는 파비콘에서만 사용. 파일은 `assets/favicon/`, 루트에 `favicon.ico`.
+
+## Home — SOUND ENGINE (`engine.js`)
+
+*The Architecture of Sound.* 검정 공간에 떠 있는, 소리를 만들어내는 정밀한 기계적 코어.
+NVIDIA의 기술적 분위기 + Nothing의 절제 + 하이엔드 오디오 장비의 정밀함.
+
+**레이어**
+1. Outer Frame — 티타늄 짐벌 링 2개 + 시계식 눈금 베젤 (천천히 회전)
+2. Mechanical Ring — 반대 방향으로 도는 기어 2개, 볼트, 스포크
+3. Resonance Chamber — 동심원 진동판(셰이더로 물결) + 공명 링
+4. Energy Core — 유리 구 안에서 맥동하는 녹색 코어 + 와이어 케이지
+5. Particles — 빛 입자 + 금속 파편 벨트
+
+**Material palette** (녹색은 코어와 일부 부품에만)
+Black Titanium `#111513` · Brushed Silver `#8D9891` · Neon Green `#00E676` · Dark Metal `#26332B` · Translucent Glass `#B8DCC4` · Void Black `#080B09`
+비율: 블랙·다크메탈 60% / 실버·크롬 25% / 유리 10% / 네온 그린 5%
+
+**움직임**
+- Idle: 링 저속 회전, 코어 약한 맥동, 입자 부유
+- Mouse: 마우스 방향으로 기울어짐, 레이어마다 다른 관성으로 반응, 코어 밝아짐
+- Click: 레이어 분해(exploded view) → 코어 점등·충격파 → 고속 회전 후 안정화
+- Audio reactive(준비됨): low → 링 속도, mid → 진동판, high → 입자, volume → 코어 밝기
+
+**소리 연결 지점**
+- `window.SoundEngine.setLevels({ low, mid, high, volume })` — 0~1 값, Web Audio AnalyserNode에서 넣으면 됨
+- 클릭 시 `engine:ignite` 이벤트 발생 → 작동음/임팩트 사운드 재생에 사용
+
+**레이아웃**: 좌상단 이름 · 우상단 메뉴 · 중앙 엔진(넓은 화면은 오른쪽으로 약간) · 좌하단 카피 · 우하단 SCROLL / 01—04 · 우상단 HUD
+**기술**: Three.js 0.170 (CDN importmap) + UnrealBloom 후처리 + GLSL 셰이더. 빌드 도구 없음.
