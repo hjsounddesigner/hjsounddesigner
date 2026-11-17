@@ -450,15 +450,14 @@ function init() {
     composer.setSize(W, H);
     const aspect = W / H;
     camera.aspect = aspect;
-    const fit = 4.0 / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * Math.min(1, aspect * 0.95));
+    const fit = (aspect < 0.8 ? 3.4 : 4.4) / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * Math.min(1, aspect * 0.95));
     camera.position.set(0, 0, fit);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
-    // 넓은 화면에서는 엔진을 오른쪽으로 비켜 좌하단 카피와 겹치지 않게
-    root.position.x = aspect > 1.15 ? Math.min(1.9, (aspect - 1.0) * 2.6) : 0;
+    // 엔진은 화면 중앙, 아래 HUD 자리만큼 살짝 위로
+    root.position.x = 0;
     const halfH = fit * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    // 세로 화면에서는 엔진을 위로 올려 아래쪽 카피 영역을 비운다
-    root.position.y = aspect > 1.15 ? 0.15 : halfH * 0.34;
+    root.position.y = halfH * (aspect > 1 ? 0.1 : 0.2);
     pMat.uniforms.uPR.value = PR;
   }
   new ResizeObserver(resize).observe(stage);
