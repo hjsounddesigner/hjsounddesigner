@@ -23,29 +23,19 @@
   }
 
   /* 3) scroll reveal */
+  let revealIO = null;
   const items = document.querySelectorAll(".reveal");
   if (REDUCED || !("IntersectionObserver" in window)) {
     items.forEach((el) => el.classList.add("is-in"));
   } else {
-    const io = new IntersectionObserver(
+    revealIO = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+        if (e.isIntersecting) { e.target.classList.add("is-in"); revealIO.unobserve(e.target); }
       }),
       { threshold: 0.12 }
     );
-    items.forEach((el) => io.observe(el));
+    items.forEach((el) => revealIO.observe(el));
   }
-
-  /* 4) works filter (chips) */
-  const chips = document.querySelectorAll("[data-filter]");
-  const cards = document.querySelectorAll("[data-category]");
-  chips.forEach((chip) =>
-    chip.addEventListener("click", () => {
-      const f = chip.dataset.filter;
-      chips.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
-      cards.forEach((card) => (card.hidden = f !== "all" && card.dataset.category !== f));
-    })
-  );
 
   /* 5) mobile menu */
   const html = document.documentElement;
@@ -66,42 +56,94 @@
     matchMedia("(min-width: 761px)").addEventListener("change", (m) => { if (m.matches) set(false); });
   }
 
-  /* 6) proposal form → mailto */
-  const form = document.querySelector("[data-proposal]");
-  if (form) {
-    const TO = "2hakjun15@naver.com";
-    const note = form.querySelector("[data-form-note]");
-    let type = "Game Audio";
-    form.querySelectorAll("[data-type]").forEach((chip) =>
-      chip.addEventListener("click", () => {
-        type = chip.dataset.type;
-        form.querySelectorAll("[data-type]").forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+  /* 6) 페이지 제목: 글자마다 올라오며 등장 → 이후 물결 */
+  document.querySelectorAll("[data-wave-title]").forEach((el) => {
+    const text = el.textContent.trim();
+    el.setAttribute("aria-label", text);
+    el.innerHTML = [...text]
+      .map((ch, i) => `<span class="ch" aria-hidden="true"><span style="--i:${i}">${ch === " " ? "&nbsp;" : ch}</span></span>`)
+      .join("");
+    requestAnimationFrame(() => setTimeout(() => el.classList.add("is-in"), 80));
+    if (!REDUCED) setTimeout(() => el.classList.add("is-live"), 1000 + text.length * 65);
+  });
+
+  /* 7) Works: 유튜브 썸네일 (videos.js 의 주소 목록) */
+  const list = document.querySelector("[data-videos]");
+  if (list) {
+    const idOf = (url) => {
+      try {
+        const u = new URL(url, location.href);
+        if (u.hostname.includes("youtu.be")) return u.pathname.slice(1).split("/")[0];
+        if (u.searchParams.get("v")) return u.searchParams.get("v");
+        const m = u.pathname.match(/\/(?:shorts|embed|live)\/([\w-]{6,})/);
+        return m ? m[1] : "";
+      } catch { return ""; }
+    };
+    const urls = (window.VIDEOS || []).filter(Boolean);
+    if (!urls.length) {
+      list.innerHTML = Array.from({ length: 6 }, () =>
+        '<li><div class="video video--empty" aria-hidden="true"><span class="video__play"></span><span class="video__label">Video slot</span></div></li>').join("");
+    } else {
+      urls.forEach((url, i) => {
+        const id = idOf(url);
+        if (!id) return;
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.className = "video reveal";
+        a.href = `https://www.youtube.com/watch?v=${id}`;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.setAttribute("aria-label", `영상 ${i + 1} 유튜브에서 보기`);
+        const img = new Image();
+        img.alt = "";
+        img.loading = i < 3 ? "eager" : "lazy";
+        img.decoding = "async";
+        img.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+        // maxres 가 없는 영상은 120px 짜리 회색 이미지가 오므로 hq 로 교체
+        img.addEventListener("load", () => { if (img.naturalWidth <= 120) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; });
+        img.addEventListener("error", () => { if (!img.src.includes("hqdefault")) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; });
+        a.append(img, Object.assign(document.createElement("span"), { className: "video__play", ariaHidden: "true" }));
+        li.append(a);
+        list.append(li);
+      });
+      list.querySelectorAll(".reveal").forEach((el) => { if (REDUCED || !("IntersectionObserver" in window)) el.classList.add("is-in"); else if (revealIO) revealIO.observe(el); else el.classList.add("is-in"); });
+    }
+  }
+
+  /* 8) 클릭하면 복사 */
+  const copyBtns = document.querySelectorAll("[data-copy]");
+  if (copyBtns.length) {
+    const toast = Object.assign(document.createElement("div"), { className: "toast", role: "status" });
+    document.body.appendChild(toast);
+    let tt = 0;
+    const show = (msg) => { toast.textContent = msg; toast.classList.add("is-on"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("is-on"), 1800); };
+    const legacy = (text) => {
+      const ta = Object.assign(document.createElement("textarea"), { value: text });
+      ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch {}
+      ta.remove(); return ok;
+    };
+    copyBtns.forEach((btn) =>
+      btn.addEventListener("click", async () => {
+        const text = btn.dataset.copy;
+        let ok = false;
+        try { await navigator.clipboard.writeText(text); ok = true; } catch { ok = legacy(text); }
+        const hint = btn.querySelector(".copy__hint");
+        if (ok) {
+          btn.classList.add("is-copied");
+          if (hint) hint.textContent = "Copied ✓";
+          show(`복사했어요: ${text}`);
+          setTimeout(() => { btn.classList.remove("is-copied"); if (hint) hint.textContent = "Copy"; }, 1800);
+        } else {
+          show("복사하지 못했어요. 직접 선택해서 복사해주세요.");
+        }
       })
     );
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const f = new FormData(form);
-      const name = String(f.get("name") || "").trim();
-      const email = String(f.get("email") || "").trim();
-      const project = String(f.get("project") || "").trim();
-      const message = String(f.get("message") || "").trim();
-      const bad = [];
-      if (!name) bad.push("name");
-      if (!/^\S+@\S+\.\S+$/.test(email)) bad.push("email");
-      if (!message) bad.push("message");
-      form.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
-      if (bad.length) {
-        bad.forEach((n) => form.elements[n].classList.add("is-invalid"));
-        form.elements[bad[0]].focus();
-        note.textContent = "이름, 이메일, 메시지를 확인해주세요.";
-        note.classList.add("is-error");
-        return;
-      }
-      note.classList.remove("is-error");
-      const subject = `[Proposal] ${type}${project ? " — " + project : ""} / ${name}`;
-      const body = `Type: ${type}\nName: ${name}\nEmail: ${email}\nProject: ${project || "-"}\n\n${message}\n`;
-      location.href = `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      note.textContent = "메일 앱이 열리지 않으면 " + TO + " 로 직접 보내주세요.";
-    });
   }
+
+  /* 9) 링크가 아직 비어 있는 카드는 이동하지 않게 */
+  document.querySelectorAll("[data-doc]").forEach((a) => {
+    if (a.getAttribute("href") === "#") a.addEventListener("click", (e) => e.preventDefault());
+  });
 })();

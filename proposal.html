@@ -48,62 +48,21 @@
   <main id="main">
     <section class="page-head">
       <div class="wrap">
-        <p class="eyebrow">Proposal</p>
-        <h1>Send a<br>proposal.</h1>
-        <p>프로젝트 제안, 협업, 외주 문의를 남겨주세요. 아래 내용을 채우고 보내기를 누르면 메일 앱이 열려요.</p>
+        <h1 class="wave-title" data-wave-title>Proposal</h1>
       </div>
     </section>
 
     <section class="section" style="border-top:0;padding-top:0">
-      <div class="wrap proposal">
-        <form class="form reveal" data-proposal novalidate>
-          <fieldset class="form__group">
-            <legend class="form__label">Type</legend>
-            <div class="chips" role="group" aria-label="제안 유형">
-              <button class="chip" type="button" data-type="Game Audio" aria-pressed="true">Game Audio</button>
-              <button class="chip" type="button" data-type="Film / Video" aria-pressed="false">Film / Video</button>
-              <button class="chip" type="button" data-type="Music" aria-pressed="false">Music</button>
-              <button class="chip" type="button" data-type="Other" aria-pressed="false">Other</button>
-            </div>
-          </fieldset>
-
-          <div class="form__row">
-            <label class="form__field">
-              <span class="form__label">Name</span>
-              <input name="name" type="text" autocomplete="name" placeholder="이름 / 팀명" required>
-            </label>
-            <label class="form__field">
-              <span class="form__label">Your email</span>
-              <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-            </label>
+      <div class="wrap">
+        <!-- 구글 드라이브 링크: 아래 href="#" 를 PDF 공유 링크로 바꾸세요.
+             썸네일: .doc__thumb 안의 주석 처리된 <img> 를 풀고 파일 경로(assets/proposal-thumb.jpg)를 넣으세요. -->
+        <a class="doc reveal" href="#" target="_blank" rel="noopener" data-doc>
+          <div class="doc__thumb">
+            <!-- <img src="assets/proposal-thumb.jpg" alt="Proposal PDF 썸네일"> -->
+            <span class="doc__ph" aria-hidden="true">THUMBNAIL</span>
           </div>
-
-          <label class="form__field">
-            <span class="form__label">Project</span>
-            <input name="project" type="text" placeholder="프로젝트 이름 · 일정 · 예산 범위 (선택)">
-          </label>
-
-          <label class="form__field">
-            <span class="form__label">Message</span>
-            <textarea name="message" rows="6" placeholder="어떤 소리가 필요한지 자유롭게 적어주세요." required></textarea>
-          </label>
-
-          <div class="form__actions">
-            <button class="btn btn--primary" type="submit">Send Proposal ↗</button>
-            <p class="form__note" data-form-note role="status">보내기를 누르면 기본 메일 앱이 열려요.</p>
-          </div>
-        </form>
-
-        <aside class="proposal__side reveal">
-          <div class="contact-links">
-            <a class="contact-link" href="mailto:2hakjun15@naver.com">
-              <span><small>Email</small><b>2hakjun15@naver.com</b></span><i>↗</i>
-            </a>
-            <a class="contact-link" href="https://github.com/hjsounddesigner" target="_blank" rel="noopener">
-              <span><small>GitHub</small><b>hjsounddesigner</b></span><i>↗</i>
-            </a>
-          </div>
-        </aside>
+          <span class="doc__cta">Google Drive에서 열기 <i aria-hidden="true">↗</i></span>
+        </a>
       </div>
     </section>
   </main>

@@ -48,46 +48,14 @@
   <main id="main">
     <section class="page-head">
       <div class="wrap">
-        <p class="eyebrow">Works</p>
-        <h1>Selected<br>Works</h1>
-        <p>TODO: 작업 섹션 소개 문구. 카테고리는 아래 칩과 카드의 data-category 값으로 연결됩니다.</p>
+        <h1 class="wave-title" data-wave-title>Video</h1>
       </div>
     </section>
 
     <section class="section" style="border-top:0;padding-top:0">
       <div class="wrap">
-        <div class="chips" role="group" aria-label="카테고리 필터">
-          <button class="chip" data-filter="all" aria-pressed="true">All</button>
-          <button class="chip" data-filter="game" aria-pressed="false">Game</button>
-          <button class="chip" data-filter="film" aria-pressed="false">Film</button>
-          <button class="chip" data-filter="music" aria-pressed="false">Music</button>
-        </div>
-        <div class="grid">
-          <article class="card" data-category="game">
-            <div class="card__media">VIDEO / IMAGE</div>
-            <div class="card__body">
-              <span class="card__meta">Game · 2026</span>
-              <h2 class="card__title">Project Title 01</h2>
-              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
-            </div>
-          </article>
-          <article class="card" data-category="film">
-            <div class="card__media">VIDEO / IMAGE</div>
-            <div class="card__body">
-              <span class="card__meta">Film · 2026</span>
-              <h2 class="card__title">Project Title 02</h2>
-              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
-            </div>
-          </article>
-          <article class="card" data-category="music">
-            <div class="card__media">VIDEO / IMAGE</div>
-            <div class="card__body">
-              <span class="card__meta">Music · 2026</span>
-              <h2 class="card__title">Project Title 03</h2>
-              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
-            </div>
-          </article>
-        </div>
+        <!-- 영상 링크는 videos.js 에 유튜브 주소만 추가하면 썸네일로 자동 연결됩니다 -->
+        <ul class="videos" data-videos aria-label="영상 목록"></ul>
       </div>
     </section>
   </main>
@@ -99,6 +67,7 @@
     </div>
   </footer>
 
+  <script src="videos.js"></script>
   <script src="main.js" defer></script>
 </body>
 </html>

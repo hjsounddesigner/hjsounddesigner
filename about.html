@@ -48,42 +48,87 @@
   <main id="main">
     <section class="page-head">
       <div class="wrap">
-        <p class="eyebrow">About</p>
-        <h1>About</h1>
+        <h1 class="wave-title" data-wave-title>About</h1>
       </div>
     </section>
 
-    <section class="section" style="border-top:0;padding-top:0">
-      <div class="wrap split">
-        <div class="card__media reveal" style="aspect-ratio:4/5;border:1px solid var(--line);border-radius:var(--radius-lg)">PHOTO</div>
-        <div class="prose reveal">
-          <p><strong>TODO: 소개 문단 1.</strong> 어떤 사운드 디자이너인지, 어떤 작업에 관심이 있는지 적어주세요.</p>
-          <p>TODO: 소개 문단 2. 작업 방식이나 철학, 경력 요약 등.</p>
+    <section class="section about-intro" style="border-top:0;padding-top:0">
+      <div class="wrap">
+        <div class="quote">
+          <p class="quote__line reveal">저는 디자이너의 <em>'Ego'</em>보다 협업으로 완성을 만드는 게임사운드 디자이너입니다.</p>
+          <p class="quote__line reveal">사운드는 마지막에 놓이지만, 그만큼 결과를 결정짓는 순간이라고 생각합니다.</p>
+          <p class="quote__line reveal">마지막 순간까지, 저는 <em>'골키퍼'</em>처럼 몸을 던져 프로젝트의 완성을 지켜내겠습니다.</p>
         </div>
       </div>
     </section>
 
     <section class="section">
       <div class="wrap split">
-        <div>
-          <p class="eyebrow">Tools</p>
-          <h2 class="section__title">Skills &amp; Tools</h2>
-        </div>
-        <ul class="list reveal">
-          <li><span>DAW</span><span>TODO</span></li>
-          <li><span>Middleware</span><span>TODO</span></li>
-          <li><span>Game Engine</span><span>TODO</span></li>
-          <li><span>Plugins / Synths</span><span>TODO</span></li>
+        <h2 class="section__title">이력</h2>
+        <ol class="history reveal">
+          <li><span class="history__period">2024.03 - 2025.02</span><span class="history__text">한국영상대학교 음향제작학과 학사 졸업</span></li>
+          <li><span class="history__period">2019.03 - 2024.02</span><span class="history__text">한국영상대학교 음향제작과 전문학사 졸업</span></li>
+          <li><span class="history__period">2017.03 - 2018.03</span><span class="history__text">Albany High School (California) 재학</span></li>
+          <li><span class="history__period">2015.03 - 2019.02</span><span class="history__text">대전 대덕고등학교 졸업</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap split">
+        <h2 class="section__title">Tools</h2>
+        <!-- 아이콘: <span class="tool__icon"> 안의 주석 처리된 <img> 를 풀고 파일 경로(assets/tools/…)를 넣으세요. 이름은 .tool__name 에 적습니다. -->
+        <ul class="tools reveal">
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-1.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 1</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-2.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 2</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-3.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 3</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-4.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 4</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-5.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 5</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-6.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 6</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-7.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 7</span>
+          </li>
+          <li class="tool">
+            <span class="tool__icon" aria-hidden="true"><!-- <img src="assets/tools/tool-8.svg" alt=""> --></span>
+            <span class="tool__name">Tool name 8</span>
+          </li>
         </ul>
       </div>
     </section>
 
     <section class="section">
-      <div class="wrap">
-        <div class="stats reveal">
-          <div class="stat"><span class="stat__label">Projects</span><span class="stat__value">00</span></div>
-          <div class="stat"><span class="stat__label">Years</span><span class="stat__value">00</span></div>
-          <div class="stat"><span class="stat__label">Tools</span><span class="stat__value">00</span></div>
+      <div class="wrap split">
+        <h2 class="section__title">Contact</h2>
+        <div class="copy-list reveal">
+          <button class="copy" type="button" data-copy="010-5592-4638" aria-label="전화번호 복사: 010-5592-4638">
+            <span class="copy__label">Phone</span>
+            <span class="copy__value">010-5592-4638</span>
+            <span class="copy__hint" aria-hidden="true">Copy</span>
+          </button>
+          <button class="copy" type="button" data-copy="2hakjun15@naver.com" aria-label="이메일 복사: 2hakjun15@naver.com">
+            <span class="copy__label">Email</span>
+            <span class="copy__value">2hakjun15@naver.com</span>
+            <span class="copy__hint" aria-hidden="true">Copy</span>
+          </button>
         </div>
       </div>
     </section>

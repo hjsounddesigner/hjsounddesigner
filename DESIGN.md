@@ -36,9 +36,9 @@
 ## Site structure
 
 - `index.html` — Home
-- `works.html` — Works (카테고리 필터: all / game / film / music)
-- `about.html` — About
-- `proposal.html` — Proposal (제안 폼 → 메일 앱)
+- `works.html` — Works ("Video": 유튜브 썸네일 목록, `videos.js` 에 주소 추가)
+- `about.html` — About (소개 문구 · 이력 · Tools · 클릭 복사 연락처)
+- `proposal.html` — Proposal (구글 드라이브 PDF 링크 + 썸네일 슬롯)
 
 ## Stack
 
