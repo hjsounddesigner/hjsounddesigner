@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Works | Hakjun Lee</title>
+  <meta name="description" content="Hakjun Lee의 사운드 디자인 작업 모음.">
+  <meta name="theme-color" content="#080b09">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Works | Hakjun Lee">
+  <meta property="og:description" content="Hakjun Lee의 사운드 디자인 작업 모음.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="nav__brand" href="index.html" aria-label="Hakjun Lee — Home">
+        <span class="nav__dot" aria-hidden="true"></span>Hakjun Lee
+      </a>
+      <nav class="nav__links" aria-label="주 메뉴">
+        <a href="index.html">Home</a>
+        <a href="works.html" aria-current="page">Works</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">Works</p>
+        <h1>Selected<br>Works</h1>
+        <p>TODO: 작업 섹션 소개 문구. 카테고리는 아래 칩과 카드의 data-category 값으로 연결됩니다.</p>
+      </div>
+    </section>
+
+    <section class="section" style="border-top:0;padding-top:0">
+      <div class="wrap">
+        <div class="chips" role="group" aria-label="카테고리 필터">
+          <button class="chip" data-filter="all" aria-pressed="true">All</button>
+          <button class="chip" data-filter="game" aria-pressed="false">Game</button>
+          <button class="chip" data-filter="film" aria-pressed="false">Film</button>
+          <button class="chip" data-filter="music" aria-pressed="false">Music</button>
+        </div>
+        <div class="grid">
+          <article class="card" data-category="game">
+            <div class="card__media">VIDEO / IMAGE</div>
+            <div class="card__body">
+              <span class="card__meta">Game · 2026</span>
+              <h2 class="card__title">Project Title 01</h2>
+              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
+            </div>
+          </article>
+          <article class="card" data-category="film">
+            <div class="card__media">VIDEO / IMAGE</div>
+            <div class="card__body">
+              <span class="card__meta">Film · 2026</span>
+              <h2 class="card__title">Project Title 02</h2>
+              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
+            </div>
+          </article>
+          <article class="card" data-category="music">
+            <div class="card__media">VIDEO / IMAGE</div>
+            <div class="card__body">
+              <span class="card__meta">Music · 2026</span>
+              <h2 class="card__title">Project Title 03</h2>
+              <p class="card__desc">TODO: 역할, 사용 툴, 설명</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© <span data-year>2026</span> Hakjun Lee. All rights reserved.</span>
+      <span>Sound Design Portfolio</span>
+    </div>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
