@@ -54,15 +54,16 @@
 
     <section class="section" style="border-top:0;padding-top:0">
       <div class="wrap">
-        <!-- 구글 드라이브 링크: 아래 href="#" 를 PDF 공유 링크로 바꾸세요.
-             썸네일: .doc__thumb 안의 주석 처리된 <img> 를 풀고 파일 경로(assets/proposal-thumb.jpg)를 넣으세요. -->
-        <a class="doc reveal" href="#" target="_blank" rel="noopener" data-doc>
-          <div class="doc__thumb">
-            <!-- <img src="assets/proposal-thumb.jpg" alt="Proposal PDF 썸네일"> -->
-            <span class="doc__ph" aria-hidden="true">THUMBNAIL</span>
+        <!-- 구글 드라이브 PDF: 파일 ID(1hbsy96z6…)만 바꾸면 뷰어와 '열기' 링크가 함께 바뀝니다.
+             뷰어: …/preview (이 사이트 안에서 표시) · 링크: …/view (구글 드라이브에서 열기) -->
+        <div class="viewer reveal">
+          <div class="viewer__frame">
+            <iframe src="https://drive.google.com/file/d/1hbsy96z6Ra6FUx_mHJKjRVYqu2htOlJr/preview" title="Proposal PDF" loading="lazy" allow="autoplay" allowfullscreen></iframe>
           </div>
-          <span class="doc__cta">Google Drive에서 열기 <i aria-hidden="true">↗</i></span>
-        </a>
+          <a class="viewer__link" href="https://drive.google.com/file/d/1hbsy96z6Ra6FUx_mHJKjRVYqu2htOlJr/view" target="_blank" rel="noopener">
+            <span>Google Drive에서 열기</span> <i aria-hidden="true">↗</i>
+          </a>
+        </div>
       </div>
     </section>
   </main>
