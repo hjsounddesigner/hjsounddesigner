@@ -180,7 +180,7 @@
   /* 7-d) 탭 이동 제스처 — Home ↔ Works ↔ About ↔ Analysis ↔ Contact (메뉴 순서 기준, Home 은 상단 브랜드 링크)
      · 좌우로 밀기: 모바일 터치 / 데스크톱 트랙패드 가로 스크롤(Shift+휠 포함) / 홈에서는 마우스 드래그도 가능
      · 홈 전용 SCROLL: 아래로 스크롤(휠 · ↓ · PageDown · Space) 또는 위로 스와이프(모바일), 혹은 SCROLL 을 누르면 Works 로
-     · 다른 탭: 페이지 맨 아래에서 한 번 더 아래로 스크롤(휠 · ↓ · Space · 위로 스와이프)하면 다음 탭으로 */
+     · 다른 탭: 페이지 맨 아래에서 한 번 더 아래로 스크롤(휠 · ↓ · Space · 위로 스와이프)하면 다음 탭으로, Contact 에서는 Home 으로 */
   const tabs = [...document.querySelectorAll(".nav__brand, #site-nav a[href]")];
   const cur = tabs.findIndex((a) => a.getAttribute("aria-current") === "page");
   const scrollHint = document.querySelector(".scroll-hint");
@@ -207,7 +207,7 @@
     const step = (dir) => { const next = tabs[cur + dir]; if (next) leave(next.href, dir > 0 ? -28 : 28, 0); }; // +1: 다음 탭
     const toWorks = () => { if (scrollHint) leave(scrollHint.href, 0, -28); };
     const atBottom = () => scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-    const down = () => { const next = tabs[cur + 1]; if (next) leave(next.href, 0, -28); }; // 맨 아래에서 아래로 → 다음 탭
+    const down = () => { const next = tabs[cur + 1] || tabs[0]; if (next) leave(next.href, 0, -28); }; // 맨 아래에서 아래로 → 다음 탭 (마지막 탭 Contact 은 Home 으로 되돌아감)
     // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
     addEventListener("pageshow", () => { leaving = false; document.body.style.cssText = ""; });
 
