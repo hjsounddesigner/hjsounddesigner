@@ -179,7 +179,8 @@
 
   /* 7-d) 탭 이동 제스처 — Home ↔ Works ↔ About ↔ Analysis ↔ Contact (메뉴 순서 기준, Home 은 상단 브랜드 링크)
      · 좌우로 밀기: 모바일 터치 / 데스크톱 트랙패드 가로 스크롤(Shift+휠 포함) / 홈에서는 마우스 드래그도 가능
-     · 홈 전용 SCROLL: 아래로 스크롤(휠 · ↓ · PageDown · Space) 또는 위로 스와이프(모바일), 혹은 SCROLL 을 누르면 Works 로 */
+     · 홈 전용 SCROLL: 아래로 스크롤(휠 · ↓ · PageDown · Space) 또는 위로 스와이프(모바일), 혹은 SCROLL 을 누르면 Works 로
+     · 다른 탭: 페이지 맨 아래에서 한 번 더 아래로 스크롤(휠 · ↓ · Space · 위로 스와이프)하면 다음 탭으로 */
   const tabs = [...document.querySelectorAll(".nav__brand, #site-nav a[href]")];
   const cur = tabs.findIndex((a) => a.getAttribute("aria-current") === "page");
   const scrollHint = document.querySelector(".scroll-hint");
@@ -205,6 +206,8 @@
     };
     const step = (dir) => { const next = tabs[cur + dir]; if (next) leave(next.href, dir > 0 ? -28 : 28, 0); }; // +1: 다음 탭
     const toWorks = () => { if (scrollHint) leave(scrollHint.href, 0, -28); };
+    const atBottom = () => scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+    const down = () => { const next = tabs[cur + 1]; if (next) leave(next.href, 0, -28); }; // 맨 아래에서 아래로 → 다음 탭
     // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
     addEventListener("pageshow", () => { leaving = false; document.body.style.cssText = ""; });
 
@@ -215,20 +218,23 @@
       if (e.touches.length !== 1 || blocked()) return;
       if (e.target.closest(interactive) || scrollsX(e.target)) return;
       const t = e.touches[0];
-      t0 = { x: t.clientX, y: t.clientY, time: Date.now() };
+      t0 = { x: t.clientX, y: t.clientY, time: Date.now(), bottom: atBottom() };
     }, { passive: true });
     addEventListener("touchend", (e) => {
       if (!t0) return;
       const t = e.changedTouches[0];
-      const dx = t.clientX - t0.x, dy = t.clientY - t0.y, dt = Date.now() - t0.time;
+      const dx = t.clientX - t0.x, dy = t.clientY - t0.y, dt = Date.now() - t0.time, startedAtBottom = t0.bottom;
       t0 = null;
       if (dt > 700) return;
       if (Math.abs(dx) >= 70 && Math.abs(dx) >= Math.abs(dy) * 1.6) step(dx < 0 ? 1 : -1); // 왼쪽으로 밀면 다음 탭
-      else if (scrollHint && dy <= -70 && Math.abs(dy) >= Math.abs(dx) * 1.6) toWorks(); // 홈: 위로 쓸어올리면 Works
+      else if (dy <= -70 && Math.abs(dy) >= Math.abs(dx) * 1.6) { // 위로 쓸어올리기
+        if (scrollHint) toWorks(); // 홈: Works 로
+        else if (startedAtBottom) down(); // 그 외: 맨 아래에서 한 번 더 쓸어올리면 다음 탭
+      }
     }, { passive: true });
 
     /* 휠 / 트랙패드 (데스크톱) */
-    let acc = 0, accAt = 0;
+    let acc = 0, accAt = 0, wheelAt = 0, wheelBottom = false, wheelAcc = 0;
     addEventListener("wheel", (e) => {
       if (leaving || blocked() || e.ctrlKey) return;
       const ax = Math.abs(e.deltaX), ay = Math.abs(e.deltaY);
@@ -239,8 +245,14 @@
         accAt = now;
         acc += e.deltaX;
         if (Math.abs(acc) > 70) { step(acc > 0 ? 1 : -1); acc = 0; }
-      } else if (scrollHint && e.deltaY > 12 && ay > ax) {
-        toWorks();
+      } else if (scrollHint) {
+        if (e.deltaY > 12 && ay > ax) toWorks();
+      } else if (e.deltaY > 0 && ay > ax && !e.target.closest(interactive)) {
+        // 맨 아래에 '이미' 닿아 있는 상태에서 시작한 스크롤만 인정 (관성 스크롤로 바닥에 닿은 경우는 제외)
+        const now = Date.now();
+        if (now - wheelAt > 250) { wheelBottom = atBottom(); wheelAcc = 0; }
+        wheelAt = now;
+        if (wheelBottom) { wheelAcc += e.deltaY; if (wheelAcc > 120) { wheelAcc = 0; down(); } }
       }
     }, { passive: true });
 
@@ -255,6 +267,14 @@
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
         e.preventDefault();
         toWorks();
+      });
+    }
+
+    /* 키보드 (그 외 탭): 맨 아래에서 ↓ / PageDown / Space 를 한 번 더 누르면 다음 탭 */
+    if (!scrollHint) {
+      addEventListener("keydown", (e) => {
+        if (e.repeat || blocked() || !["ArrowDown", "PageDown", " "].includes(e.key) || e.target.closest("input, textarea, select, button, a")) return;
+        if (atBottom()) down();
       });
     }
 
