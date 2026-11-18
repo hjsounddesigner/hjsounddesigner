@@ -167,6 +167,46 @@
     img.src = img.dataset.src;
   });
 
+  /* 7-d) 모바일 전용: 좌우로 밀면 Works ↔ About ↔ Proposal 이동 (메뉴 순서 기준) */
+  const mobileMQ = matchMedia("(max-width: 760px)");
+  const tabs = [...document.querySelectorAll("#site-nav a[href]")];
+  const cur = tabs.findIndex((a) => a.getAttribute("aria-current") === "page");
+  if (cur !== -1) {
+    let t0 = null;
+    const interactive = "input, textarea, select, iframe, [data-no-swipe]";
+    const scrollsX = (el) => {
+      for (; el && el !== document.body; el = el.parentElement) {
+        if (el.scrollWidth > el.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowX)) return true;
+      }
+      return false;
+    };
+    addEventListener("touchstart", (e) => {
+      t0 = null;
+      if (!mobileMQ.matches || e.touches.length !== 1) return;
+      if (html.classList.contains("menu-open") || html.classList.contains("modal-open")) return;
+      if (e.target.closest(interactive) || scrollsX(e.target)) return;
+      const t = e.touches[0];
+      t0 = { x: t.clientX, y: t.clientY, time: Date.now() };
+    }, { passive: true });
+    addEventListener("touchend", (e) => {
+      if (!t0) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - t0.x, dy = t.clientY - t0.y, dt = Date.now() - t0.time;
+      t0 = null;
+      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6 || dt > 700) return; // 가로로 빠르게 민 경우만
+      const next = tabs[cur + (dx < 0 ? 1 : -1)]; // 왼쪽으로 밀면 다음 탭
+      if (!next) return;
+      if (!REDUCED) {
+        document.body.style.transition = "opacity 0.18s ease, transform 0.18s ease";
+        document.body.style.opacity = "0";
+        document.body.style.transform = `translateX(${dx < 0 ? -28 : 28}px)`;
+      }
+      setTimeout(() => { location.href = next.href; }, REDUCED ? 0 : 160);
+    }, { passive: true });
+    // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
+    addEventListener("pageshow", () => { document.body.style.cssText = ""; });
+  }
+
   /* 8) 클릭하면 복사 */
   const copyBtns = document.querySelectorAll("[data-copy]");
   if (copyBtns.length) {
