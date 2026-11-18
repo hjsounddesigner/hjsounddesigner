@@ -128,6 +128,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-bottom: 1px solid var(--line);
 }
 .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+/* 스크롤바 유무(홈은 없음, 나머지 탭은 있음)와 상관없이 로고·메뉴 위치가 같도록, 가운데 정렬 기준을 스크롤바 포함 폭(100vw)으로 */
+.nav .wrap { width: auto; max-width: var(--max); margin-left: max(0px, calc((100vw - var(--max)) / 2)); margin-right: auto; }
 .nav__brand { white-space: nowrap; font-weight: 600; letter-spacing: -0.01em; display: inline-flex; align-items: center; gap: 10px; }
 .nav__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 12px var(--primary); }
 .nav__links { display: flex; gap: 6px; }
