@@ -55,19 +55,47 @@
 
     <section class="section" style="border-top:0;padding-top:0">
       <div class="wrap">
-        <div class="copy-list reveal">
-          <button class="copy" type="button" data-copy="010-5592-4638" aria-label="전화번호 복사: 010-5592-4638">
-            <span class="copy__label">Phone</span>
-            <span class="copy__value">010-5592-4638</span>
-            <span class="copy__hint" aria-hidden="true">Copy</span>
-          </button>
-          <button class="copy" type="button" data-copy="2hakjun15@naver.com" aria-label="이메일 복사: 2hakjun15@naver.com">
-            <span class="copy__label">Email</span>
-            <span class="copy__value">2hakjun15@naver.com</span>
-            <span class="copy__hint" aria-hidden="true">Copy</span>
-          </button>
+        <div class="contact">
+          <p class="contact__intro reveal">작업 의뢰나 채용 문의는 편하게 연락 주세요.<br>메일로 받으면 빠르게 답장드립니다.</p>
+
+          <form class="contact__form reveal" id="contact-form" novalidate>
+            <div class="field">
+              <label for="f-name">이름</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-company">회사</label>
+              <input id="f-company" name="company" type="text" autocomplete="organization">
+            </div>
+            <div class="field field--wide">
+              <label for="f-email">이메일</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field field--wide">
+              <label for="f-message">내용</label>
+              <textarea id="f-message" name="message" rows="5" required></textarea>
+            </div>
+            <input class="contact__trap" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <p class="contact__error" id="form-error" role="alert" hidden></p>
+            <button class="contact__submit" id="form-submit" type="submit">보내기</button>
+            <p class="contact__hint" id="form-status" role="status">보낸 내용은 제 메일로 바로 전달됩니다.</p>
+          </form>
+
+          <section class="contact__info reveal" aria-labelledby="info-title">
+            <h2 id="info-title">연락처</h2>
+            <ul>
+              <li>
+                <span class="contact__label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>Phone</span>
+                <a href="tel:010-5592-4638">010-5592-4638</a>
+              </li>
+              <li>
+                <span class="contact__label"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>Email</span>
+                <a href="mailto:2hakjun15@naver.com">2hakjun15@naver.com</a>
+              </li>
+            </ul>
+          </section>
         </div>
-        </div>
+      </div>
     </section>
   </main>
 

@@ -79,6 +79,14 @@
         return m ? m[1] : "";
       } catch { return ""; }
     };
+    // &t=41s / &t=1m5s / &t=65 → 초 단위 시작 지점
+    const startOf = (url) => {
+      try {
+        const t = new URL(url, location.href).searchParams.get("t") || "";
+        const m = t.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/);
+        return m ? (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0) : 0;
+      } catch { return 0; }
+    };
     const urls = (window.VIDEOS || []).filter(Boolean);
     if (!urls.length) {
       list.innerHTML = Array.from({ length: 6 }, () =>
@@ -90,7 +98,9 @@
         const li = document.createElement("li");
         const a = document.createElement("a");
         a.className = "video reveal";
-        a.href = `https://www.youtube.com/watch?v=${id}`;
+        const start = startOf(url);
+        a.href = `https://www.youtube.com/watch?v=${id}${start ? `&t=${start}s` : ""}`;
+        if (start) a.dataset.start = start;
         a.target = "_blank";
         a.rel = "noopener";
         a.dataset.videoId = id;
@@ -154,7 +164,7 @@
       if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // 새 탭 열기 등은 그대로 원본 링크로
       e.preventDefault();
       if (a.dataset.embed) open(a.dataset.embed, a.dataset.title || "문서 보기", true, a);
-      else open(`https://www.youtube-nocookie.com/embed/${encodeURIComponent(a.dataset.videoId)}?autoplay=1&rel=0&playsinline=1`, "YouTube video player", false, a);
+      else open(`https://www.youtube-nocookie.com/embed/${encodeURIComponent(a.dataset.videoId)}?autoplay=1&rel=0&playsinline=1${a.dataset.start ? `&start=${a.dataset.start}` : ""}`, "YouTube video player", false, a);
     });
     closeBtn.addEventListener("click", close);
     modal.addEventListener("click", (e) => { if (e.target === modal || e.target.classList.contains("vmodal__frame")) close(); });
@@ -205,6 +215,90 @@
     }, { passive: true });
     // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
     addEventListener("pageshow", () => { document.body.style.cssText = ""; });
+  }
+
+  /* 7-f) Contact: 문의 폼 → FormSubmit 으로 내 메일에 전달 */
+  const contactForm = document.getElementById("contact-form");
+  if (contactForm) {
+    const f = contactForm.elements; // form.name 은 폼 자체 속성이라 elements 로 접근
+    const error = document.getElementById("form-error");
+    const status = document.getElementById("form-status");
+    const submit = document.getElementById("form-submit");
+    const MAIL = "2hakjun15@naver.com";
+    const ENDPOINT = `https://formsubmit.co/ajax/${MAIL}`;
+    const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const fail = (msg, field) => { error.textContent = msg; error.hidden = false; if (field) field.focus(); };
+
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = f.name.value.trim();
+      const company = f.company.value.trim();
+      const email = f.email.value.trim();
+      const message = f.message.value.trim();
+
+      f.name.setAttribute("aria-invalid", name ? "false" : "true");
+      f.email.setAttribute("aria-invalid", EMAIL_OK.test(email) ? "false" : "true");
+      f.message.setAttribute("aria-invalid", message ? "false" : "true");
+      if (!name) return fail("이름을 적어 주세요.", f.name);
+      if (!EMAIL_OK.test(email)) return fail("답장받을 이메일 주소를 확인해 주세요.", f.email);
+      if (!message) return fail("내용을 적어 주세요.", f.message);
+      if (f._honey.value) return; // 자동 스팸
+      error.hidden = true;
+
+      submit.disabled = true;
+      submit.textContent = "보내는 중";
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            _subject: `[포트폴리오 문의] ${name}${company ? ` / ${company}` : ""}`,
+            _template: "table",
+            _replyto: email,
+            이름: name,
+            회사: company || "-",
+            이메일: email,
+            내용: message,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || String(data.success) !== "true") throw new Error(data.message || `HTTP ${res.status}`);
+        contactForm.reset();
+        status.textContent = "보냈습니다. 확인하는 대로 답장드릴게요.";
+        submit.textContent = "보냈습니다";
+      } catch (err) {
+        fail(`보내지 못했습니다 (${err.message}). 잠시 후 다시 시도하거나 ${MAIL}으로 직접 메일을 보내 주세요.`);
+        submit.textContent = "보내기";
+        submit.disabled = false;
+      }
+    });
+  }
+
+  /* 7-g) 홈: 아래로 스크롤(휠 · ↓ · PageDown · Space)하거나 오른쪽 SCROLL 을 누르면 Works 로 이동 */
+  const scrollHint = document.querySelector(".scroll-hint");
+  if (scrollHint) {
+    let going = false;
+    const go = () => {
+      if (going) return;
+      going = true;
+      if (!REDUCED) {
+        document.body.style.transition = "opacity 0.22s ease, transform 0.22s ease";
+        document.body.style.opacity = "0";
+        document.body.style.transform = "translateY(-28px)";
+      }
+      setTimeout(() => { location.href = scrollHint.href; }, REDUCED ? 0 : 200);
+    };
+    addEventListener("wheel", (e) => { if (e.deltaY > 12) go(); }, { passive: true });
+    addEventListener("keydown", (e) => {
+      if (!["ArrowDown", "PageDown", " "].includes(e.key) || e.target.closest("input, textarea, select, button, a")) return;
+      e.preventDefault();
+      go();
+    });
+    scrollHint.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      go();
+    });
   }
 
   /* 8) 클릭하면 복사 */

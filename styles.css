@@ -441,6 +441,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .engine-corners i:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
 .engine-corners i:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
 
+/* 홈: 오른쪽 SCROLL — 아래로 스크롤하거나 누르면 Works 로 */
+.scroll-hint {
+  position: absolute; z-index: 3; right: calc(var(--gutter) + 22px); top: 50%; transform: translateY(-50%);
+  display: inline-flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 6px;
+  color: var(--muted); transition: color 0.25s;
+}
+.scroll-hint span { writing-mode: vertical-rl; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; }
+.scroll-hint::after { content: ""; width: 1px; height: 48px; background: currentColor; transform-origin: top; animation: scrollHint 1.8s var(--ease) infinite; }
+.scroll-hint:hover, .scroll-hint:focus-visible { color: var(--primary); }
+@keyframes scrollHint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+@media (max-width: 760px) { .scroll-hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .scroll-hint::after { animation: none; } }
+
 /* 홈은 한 화면: 스크롤 없음 */
 .page-home { height: 100svh; overflow: hidden; }
 .page-home .footer { display: none; }
@@ -596,6 +609,36 @@ html.modal-open { overflow: hidden; }
 .tool__icon img { width: 100%; height: 100%; object-fit: contain; border: 0; }
 .tool__icon:has(img) { border-style: solid; border-color: var(--line); background: #fff; }
 .tool__name { font-size: 14px; color: var(--muted); }
+
+/* Contact — 문의 폼 + 연락처 */
+.contact { max-width: 560px; }
+.contact__intro { margin: 0 0 28px; color: var(--muted); font-size: 15px; line-height: 1.8; word-break: keep-all; }
+.contact__form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field--wide, .contact__error, .contact__submit, .contact__hint { grid-column: 1 / -1; }
+.field label { font-size: 13px; color: var(--muted); }
+.field input, .field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--elevated); color: var(--text); font: inherit; font-size: 15px; transition: border-color 0.2s; }
+.field textarea { resize: vertical; min-height: 110px; }
+.field input:hover, .field textarea:hover { border-color: var(--line-strong); }
+.field input:focus-visible, .field textarea:focus-visible { outline: none; border-color: var(--primary); }
+.field [aria-invalid="true"] { border-color: #b4553e; }
+.contact__error { margin: -6px 0 0; font-size: 13px; color: #d98a73; }
+.contact__submit { min-height: 46px; border: 0; border-radius: var(--radius); background: var(--primary); color: #04100a; font: inherit; font-weight: 600; cursor: pointer; transition: box-shadow 0.3s; }
+.contact__submit:hover { box-shadow: 0 0 28px rgba(0, 230, 118, 0.4); }
+.contact__submit:disabled { opacity: 0.6; cursor: default; box-shadow: none; }
+.contact__hint { margin: -6px 0 0; font-size: 12px; color: var(--muted); text-align: center; }
+.contact__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.contact__info { margin-top: 48px; }
+.contact__info h2 { margin: 0 0 14px; font-weight: 400; font-size: 15px; color: var(--muted); }
+.contact__info ul { list-style: none; margin: 0; padding: 0; }
+.contact__info li { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; font-size: 15px; }
+.contact__label { display: inline-flex; align-items: center; gap: 10px; color: var(--text); flex: none; }
+.contact__info li::before { content: ""; order: 1; flex: 1; border-bottom: 1px dashed var(--line); transform: translateY(-4px); }
+.contact__info a { order: 2; color: var(--muted); transition: color 0.2s; }
+.contact__info a:hover { color: var(--primary); }
+.contact__label svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 520px) { .contact__form { grid-template-columns: minmax(0, 1fr); padding: 16px; } }
 
 /* About — case study cards (Drive documents) */
 .case-intro { color: var(--muted); margin-bottom: 24px; word-break: keep-all; }
