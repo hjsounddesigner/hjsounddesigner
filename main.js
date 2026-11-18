@@ -167,9 +167,9 @@
     img.src = img.dataset.src;
   });
 
-  /* 7-d) 모바일 전용: 좌우로 밀면 Works ↔ About ↔ Proposal 이동 (메뉴 순서 기준) */
+  /* 7-d) 모바일 전용: 좌우로 밀면 Home ↔ Works ↔ About ↔ Proposal 이동 (메뉴 순서 기준, Home 은 상단 브랜드 링크) */
   const mobileMQ = matchMedia("(max-width: 760px)");
-  const tabs = [...document.querySelectorAll("#site-nav a[href]")];
+  const tabs = [...document.querySelectorAll(".nav__brand, #site-nav a[href]")];
   const cur = tabs.findIndex((a) => a.getAttribute("aria-current") === "page");
   if (cur !== -1) {
     let t0 = null;
