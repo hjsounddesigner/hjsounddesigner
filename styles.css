@@ -441,48 +441,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .engine-corners i:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
 .engine-corners i:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
 
-/* HUD — bottom center, horizontal */
-.engine-hud {
-  position: absolute; z-index: 3; left: 50%; bottom: clamp(28px, 5vh, 52px);
-  transform: translateX(-50%);
-  width: min(880px, calc(100% - 2 * var(--gutter) - 40px));
-  display: grid; grid-template-columns: 1.15fr 1fr 0.8fr 0.8fr 1.6fr;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted);
-  background: rgba(16, 23, 19, 0.55);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  pointer-events: none;
-}
-.hud__cell { padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-.hud__cell + .hud__cell { border-left: 1px solid var(--line); }
-.hud__title { color: var(--text); }
-.hud__title span:last-child { color: var(--muted); }
-.hud__row b { font-weight: 500; font-size: 14px; letter-spacing: 0.06em; color: var(--text); font-variant-numeric: tabular-nums; }
-.hud__row:nth-child(2) b { color: var(--primary); text-shadow: 0 0 10px rgba(0, 230, 118, 0.6); }
-.hud__bars { gap: 6px; }
-.hud__bar { display: grid; grid-template-columns: 36px 1fr; align-items: center; gap: 10px; }
-.hud__bar i { --v: 0.1; position: relative; height: 3px; background: rgba(242, 245, 242, 0.08); border-radius: 2px; overflow: hidden; }
-.hud__bar i::after {
-  content: ""; position: absolute; inset: 0; transform-origin: left; transform: scaleX(var(--v));
-  background: linear-gradient(90deg, var(--secondary), var(--primary));
-  box-shadow: 0 0 8px var(--primary);
-}
-
-.engine-hint {
-  position: absolute; z-index: 3; left: 50%; transform: translateX(-50%);
-  bottom: calc(clamp(28px, 5vh, 52px) + 100px);
-  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--muted); pointer-events: none;
-}
-.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.6); animation: ping 1.8s infinite; }
-@keyframes ping {
-  0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.6); }
-  80%, 100% { box-shadow: 0 0 0 12px rgba(0, 230, 118, 0); }
-}
-
 /* 홈은 한 화면: 스크롤 없음 */
 .page-home { height: 100svh; overflow: hidden; }
 .page-home .footer { display: none; }
@@ -503,17 +461,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 760px) {
-  .engine-hud { grid-template-columns: 1fr 1fr 1fr; width: calc(100% - 2 * var(--gutter)); bottom: 20px; font-size: 10px; }
-  .hud__title { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); }
-  .hud__cell { padding: 10px 14px; }
-  .hud__cell:nth-child(2) { border-left: 0; }
-  .hud__row b { font-size: 13px; }
-  .hud__bars { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid var(--line); }
-  .engine-hint { bottom: 210px; font-size: 10px; }
   .engine-corners { inset: 12px var(--gutter); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pulse { animation: none; }
   .engine-canvas { transition: none; }
 }
 
@@ -533,27 +483,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .footer .wrap { flex-direction: column; gap: 4px; }
 }
 
-/* 홈 HUD: 태블릿 이하에서는 2줄 격자 */
-@media (max-width: 960px) {
-  .engine-hud { grid-template-columns: 1fr 1fr 1fr; width: calc(100% - 2 * var(--gutter)); bottom: 20px; font-size: 10px; }
-  .hud__title { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); }
-  .hud__cell { padding: 10px 14px; }
-  .hud__cell + .hud__cell { border-left: 1px solid var(--line); }
-  .hud__cell:nth-child(2) { border-left: 0; }
-  .hud__row b { font-size: 13px; }
-  .hud__bars { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid var(--line); }
-  .engine-hint { bottom: 200px; font-size: 10px; }
-}
-
-/* 가로로 누운 폰 / 낮은 화면: HUD를 한 줄로 */
+/* 가로로 누운 폰 / 낮은 화면 */
 @media (max-height: 560px) and (orientation: landscape) {
   :root { --nav-h: 56px; }
-  .engine-hud { grid-template-columns: auto auto auto auto 1fr; left: 50%; width: min(760px, calc(100% - 2 * var(--gutter))); bottom: 12px; }
-  .hud__title { grid-column: auto; flex-direction: column; border-bottom: 0; padding: 8px 12px; }
-  .hud__cell { padding: 8px 12px; }
-  .hud__cell:nth-child(2) { border-left: 1px solid var(--line); }
-  .hud__bars { grid-column: auto; border-top: 0; border-left: 1px solid var(--line) !important; gap: 3px; }
-  .engine-hint { display: none; }
   .engine-corners { display: none; }
 }
 
@@ -667,7 +599,13 @@ html.modal-open { overflow: hidden; }
 
 /* About — case study cards (Drive documents) */
 .case-intro { color: var(--muted); margin-bottom: 24px; word-break: keep-all; }
-.cases { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.cases { display: grid; gap: 16px; grid-template-columns: 1fr; max-width: 1000px; }
+@media (min-width: 640px) { .cases { grid-template-columns: 1fr 1fr; } }
+
+/* Analysis — section heading */
+.sec-head { display: grid; gap: 8px; margin-bottom: 28px; }
+.sec-head__title { font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.03em; font-weight: 600; line-height: 1.1; }
+.sec-head__sub { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); }
 .case { display: grid; gap: 14px; padding: 12px 12px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
   transition: border-color 0.3s, transform 0.5s var(--ease), box-shadow 0.4s; }
 .case:hover { border-color: rgba(0, 230, 118, 0.5); transform: translateY(-3px); box-shadow: 0 14px 50px -18px rgba(0, 230, 118, 0.3); }

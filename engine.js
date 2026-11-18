@@ -454,10 +454,8 @@ function init() {
     camera.position.set(0, 0, fit);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
-    // 엔진은 화면 중앙, 아래 HUD 자리만큼 살짝 위로
-    root.position.x = 0;
-    const halfH = fit * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    root.position.y = halfH * (aspect > 1 ? 0.1 : 0.2);
+    // 엔진은 화면 정중앙
+    root.position.set(0, 0, root.position.z);
     pMat.uniforms.uPR.value = PR;
   }
   new ResizeObserver(resize).observe(stage);
@@ -505,14 +503,6 @@ function init() {
   let visible = true;
   new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0 }).observe(stage);
 
-  /* ---------------- HUD ---------------- */
-  const hud = {
-    state: stage.querySelector("[data-hud-state]"),
-    rpm: stage.querySelector("[data-hud-rpm]"),
-    core: stage.querySelector("[data-hud-core]"),
-    bars: stage.querySelectorAll("[data-hud-bar]"),
-  };
-  let hudT = 0;
   let state = "BOOT";
 
   /* ---------------- easing ---------------- */
@@ -666,20 +656,8 @@ function init() {
 
     composer.render(dt);
 
-    // HUD
+    // 상태 값 (SoundEngine.state 로 노출)
     state = intro > 0.02 ? "BOOT" : ti >= 0 && ti < 0.85 ? "IGNITION" : ti >= 0 && ti < 2.3 ? "STABILIZING" : hover > 0.15 ? "ENGAGED" : "IDLE";
-    hudT -= dt;
-    if (hudT <= 0) {
-      hudT = 0.09;
-      if (hud.state) hud.state.textContent = state;
-      if (hud.rpm) hud.rpm.textContent = String(Math.round(1240 * spin.gear2.m + Math.random() * 6)).padStart(4, "0");
-      if (hud.core) hud.core.textContent = Math.min(99.9, 62 + coreI * 18 + Math.random() * 0.6).toFixed(1) + "%";
-      const bars = [lv.low, lv.mid, lv.high];
-      hud.bars.forEach((b, i) => {
-        const idle = 0.12 + 0.1 * Math.sin(now * (2 + i) + i);
-        b.style.setProperty("--v", Math.min(1, idle + bars[i] + flash * (0.9 - i * 0.15) + hover * 0.15).toFixed(3));
-      });
-    }
   }
 
   stage.classList.add("is-ready");

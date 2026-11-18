@@ -37,8 +37,9 @@
 
 - `index.html` — Home
 - `works.html` — Works ("Video": 유튜브 썸네일 목록, `videos.js` 에 주소 추가)
-- `about.html` — About (소개 문구 · 이력 · Tools · 클릭 복사 연락처)
-- `proposal.html` — Proposal (구글 드라이브 PDF 링크 + 썸네일 슬롯)
+- `about.html` — About (사진 · 소개 문구 · 이력 · Tools)
+- `analysis.html` — Analysis (Implementation: UE5 · Wwise 문서 카드 / Reverse Design: 역기획서 PDF 뷰어)
+- `contact.html` — Contact (클릭 복사 연락처)
 
 ## Stack
 
@@ -75,5 +76,5 @@ Black Titanium `#111513` · Brushed Silver `#8D9891` · Neon Green `#00E676` · 
 - `window.SoundEngine.setLevels({ low, mid, high, volume })` — 0~1 값, Web Audio AnalyserNode에서 넣으면 됨
 - 클릭 시 `engine:ignite` 이벤트 발생 → 작동음/임팩트 사운드 재생에 사용
 
-**레이아웃**: 좌상단 이름 · 우상단 메뉴 · 중앙 엔진(넓은 화면은 오른쪽으로 약간) · 좌하단 카피 · 우하단 SCROLL / 01—04 · 우상단 HUD
+**레이아웃**: 좌상단 이름 · 우상단 메뉴 · 화면 정중앙 엔진 (HUD·안내 문구 없음)
 **기술**: Three.js 0.170 (CDN importmap) + UnrealBloom 후처리 + GLSL 셰이더. 빌드 도구 없음.
