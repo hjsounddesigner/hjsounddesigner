@@ -36,8 +36,8 @@
 ## Site structure
 
 - `index.html` — Home
+- `about.html` — About (사진 + 소개 문구 나란히 · 학력 · 자격증 · Tools)
 - `works.html` — Works ("Video": 유튜브 썸네일 목록, `videos.js` 에 주소 추가)
-- `about.html` — About (사진 · 소개 문구 · 이력 · Tools)
 - `analysis.html` — Analysis (Implementation: UE5 · Wwise 문서 카드 / Reverse Design: 역기획서 PDF 뷰어)
 - `contact.html` — Contact (클릭 복사 연락처)
 

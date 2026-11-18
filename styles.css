@@ -441,7 +441,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .engine-corners i:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
 .engine-corners i:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
 
-/* 홈: 오른쪽 SCROLL — 아래로 스크롤하거나 누르면 Works 로 */
+/* 홈: 오른쪽 SCROLL — 아래로 스크롤하거나 누르면 About 으로 */
 .scroll-hint {
   position: absolute; z-index: 3; right: calc(var(--gutter) + 22px); top: 50%; transform: translateY(-50%);
   display: inline-flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 6px;
@@ -630,6 +630,15 @@ html.modal-open { overflow: hidden; }
 @media (min-width: 761px) {
   .portrait { width: 60%; aspect-ratio: 1 / 1; }
   .portrait img { object-position: center 18%; }
+}
+
+/* 소개: 작은 사진 + 문구 (모바일은 사진 위·문구 아래, 데스크톱은 나란히) */
+.about-intro__row { display: grid; gap: clamp(24px, 4vw, 56px); grid-template-columns: minmax(0, 1fr); align-items: center; }
+.about-intro__row .portrait { margin: 0; width: 160px; aspect-ratio: 3 / 4; }
+.about-intro__row .portrait img { object-position: center 12%; }
+@media (min-width: 761px) {
+  .about-intro__row { grid-template-columns: clamp(200px, 22vw, 280px) minmax(0, 1fr); }
+  .about-intro__row .portrait { width: 100%; aspect-ratio: 3 / 4; }
 }
 
 .split > .section__title { margin-top: 0; }
