@@ -93,7 +93,8 @@
         a.href = `https://www.youtube.com/watch?v=${id}`;
         a.target = "_blank";
         a.rel = "noopener";
-        a.setAttribute("aria-label", `영상 ${i + 1} 유튜브에서 보기`);
+        a.dataset.videoId = id;
+        a.setAttribute("aria-label", `영상 ${i + 1} 재생`);
         const img = new Image();
         img.alt = "";
         img.loading = i < 3 ? "eager" : "lazy";
@@ -108,6 +109,54 @@
       });
       list.querySelectorAll(".reveal").forEach((el) => { if (REDUCED || !("IntersectionObserver" in window)) el.classList.add("is-in"); else if (revealIO) revealIO.observe(el); else el.classList.add("is-in"); });
     }
+  }
+
+  /* 7-b) Works: 썸네일을 누르면 사이트 안에서 영상 재생 (팝업) */
+  if (list) {
+    const modal = document.createElement("div");
+    modal.className = "vmodal";
+    modal.hidden = true;
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-label", "영상 재생");
+    modal.innerHTML =
+      '<div class="vmodal__frame"><div class="vmodal__player"></div></div>' +
+      '<button class="vmodal__close" type="button" aria-label="닫기">Close <i aria-hidden="true">✕</i></button>';
+    document.body.appendChild(modal);
+    const player = modal.querySelector(".vmodal__player");
+    const closeBtn = modal.querySelector(".vmodal__close");
+    let lastFocus = null;
+
+    const open = (id, from) => {
+      lastFocus = from;
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&playsinline=1`;
+      iframe.title = "YouTube video player";
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      player.replaceChildren(iframe);
+      modal.hidden = false;
+      html.classList.add("modal-open");
+      closeBtn.focus();
+    };
+    const close = () => {
+      if (modal.hidden) return;
+      modal.hidden = true;
+      player.replaceChildren(); // iframe 제거 → 재생 중지
+      html.classList.remove("modal-open");
+      if (lastFocus) lastFocus.focus();
+    };
+
+    list.addEventListener("click", (e) => {
+      const a = e.target.closest("a[data-video-id]");
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // 새 탭 열기 등은 그대로 유튜브로
+      e.preventDefault();
+      open(a.dataset.videoId, a);
+    });
+    closeBtn.addEventListener("click", close);
+    modal.addEventListener("click", (e) => { if (e.target === modal || e.target.classList.contains("vmodal__frame")) close(); });
+    addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
   }
 
   /* 8) 클릭하면 복사 */
