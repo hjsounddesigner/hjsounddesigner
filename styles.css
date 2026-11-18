@@ -458,7 +458,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 @media (prefers-reduced-motion: reduce) { .scroll-hint::after { animation: none; } }
 
-html { overscroll-behavior-x: none; }
+html { overscroll-behavior: none; }
 /* 홈은 한 화면: 스크롤 없음 */
 .page-home { height: 100svh; overflow: hidden; }
 .page-home .footer { display: none; }
