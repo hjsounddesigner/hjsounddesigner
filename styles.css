@@ -647,7 +647,13 @@ html.modal-open { overflow: hidden; }
   border: 1px dashed var(--line-strong); background: var(--elevated); }
 .tool__icon img { width: 100%; height: 100%; object-fit: contain; border: 0; }
 .tool__icon:has(img) { border-style: solid; border-color: var(--line); background: #fff; }
-.tool__name { font-size: 14px; color: var(--muted); }
+.tool { align-content: start; }
+.tool__icon--dark:has(img) { background: #000; }
+.tool__name { font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.tool__badge {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1;
+  color: var(--primary); border: 1px solid rgba(0, 230, 118, 0.45); border-radius: 999px; padding: 4px 7px;
+}
 
 /* Contact — 문의 폼 + 연락처 */
 .contact { max-width: 560px; margin-inline: auto; }
