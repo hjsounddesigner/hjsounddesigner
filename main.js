@@ -111,14 +111,14 @@
     }
   }
 
-  /* 7-b) Works: 썸네일을 누르면 사이트 안에서 영상 재생 (팝업) */
-  if (list) {
+  /* 7-b) 팝업 뷰어: Works 영상(유튜브) · About 사례 문서(구글 드라이브)를 사이트 안에서 표시 */
+  if (list || document.querySelector("[data-embed]")) {
     const modal = document.createElement("div");
     modal.className = "vmodal";
     modal.hidden = true;
     modal.setAttribute("role", "dialog");
     modal.setAttribute("aria-modal", "true");
-    modal.setAttribute("aria-label", "영상 재생");
+    modal.setAttribute("aria-label", "뷰어");
     modal.innerHTML =
       '<div class="vmodal__frame"><div class="vmodal__player"></div></div>' +
       '<button class="vmodal__close" type="button" aria-label="닫기">Close <i aria-hidden="true">✕</i></button>';
@@ -127,15 +127,16 @@
     const closeBtn = modal.querySelector(".vmodal__close");
     let lastFocus = null;
 
-    const open = (id, from) => {
+    const open = (src, title, isDoc, from) => {
       lastFocus = from;
       const iframe = document.createElement("iframe");
-      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&playsinline=1`;
-      iframe.title = "YouTube video player";
+      iframe.src = src;
+      iframe.title = title;
       iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
       iframe.allowFullscreen = true;
       iframe.referrerPolicy = "strict-origin-when-cross-origin";
       player.replaceChildren(iframe);
+      modal.classList.toggle("vmodal--doc", isDoc);
       modal.hidden = false;
       html.classList.add("modal-open");
       closeBtn.focus();
@@ -148,16 +149,23 @@
       if (lastFocus) lastFocus.focus();
     };
 
-    list.addEventListener("click", (e) => {
-      const a = e.target.closest("a[data-video-id]");
-      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // 새 탭 열기 등은 그대로 유튜브로
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[data-video-id], a[data-embed]");
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // 새 탭 열기 등은 그대로 원본 링크로
       e.preventDefault();
-      open(a.dataset.videoId, a);
+      if (a.dataset.embed) open(a.dataset.embed, a.dataset.title || "문서 보기", true, a);
+      else open(`https://www.youtube-nocookie.com/embed/${encodeURIComponent(a.dataset.videoId)}?autoplay=1&rel=0&playsinline=1`, "YouTube video player", false, a);
     });
     closeBtn.addEventListener("click", close);
     modal.addEventListener("click", (e) => { if (e.target === modal || e.target.classList.contains("vmodal__frame")) close(); });
     addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
   }
+
+  /* 7-c) About: 드라이브 문서 썸네일 (공유 설정이 풀려 있지 않으면 자리표시 유지) */
+  document.querySelectorAll(".case__thumb img[data-src]").forEach((img) => {
+    img.addEventListener("error", () => img.remove());
+    img.src = img.dataset.src;
+  });
 
   /* 8) 클릭하면 복사 */
   const copyBtns = document.querySelectorAll("[data-copy]");
