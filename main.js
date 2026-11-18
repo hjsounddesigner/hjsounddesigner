@@ -177,23 +177,42 @@
     img.src = img.dataset.src;
   });
 
-  /* 7-d) 모바일 전용: 좌우로 밀면 Home ↔ Works ↔ About ↔ Analysis ↔ Contact 이동 (메뉴 순서 기준, Home 은 상단 브랜드 링크) */
-  const mobileMQ = matchMedia("(max-width: 760px)");
+  /* 7-d) 탭 이동 제스처 — Home ↔ Works ↔ About ↔ Analysis ↔ Contact (메뉴 순서 기준, Home 은 상단 브랜드 링크)
+     · 좌우로 밀기: 모바일 터치 / 데스크톱 트랙패드 가로 스크롤(Shift+휠 포함) / 홈에서는 마우스 드래그도 가능
+     · 홈 전용 SCROLL: 아래로 스크롤(휠 · ↓ · PageDown · Space) 또는 위로 스와이프(모바일), 혹은 SCROLL 을 누르면 Works 로 */
   const tabs = [...document.querySelectorAll(".nav__brand, #site-nav a[href]")];
   const cur = tabs.findIndex((a) => a.getAttribute("aria-current") === "page");
+  const scrollHint = document.querySelector(".scroll-hint");
   if (cur !== -1) {
-    let t0 = null;
     const interactive = "input, textarea, select, iframe, [data-no-swipe]";
+    const blocked = () => html.classList.contains("menu-open") || html.classList.contains("modal-open");
     const scrollsX = (el) => {
       for (; el && el !== document.body; el = el.parentElement) {
         if (el.scrollWidth > el.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowX)) return true;
       }
       return false;
     };
+    let leaving = false;
+    const leave = (href, mx, my) => {
+      if (leaving) return;
+      leaving = true;
+      if (!REDUCED) {
+        document.body.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+        document.body.style.opacity = "0";
+        document.body.style.transform = `translate(${mx}px, ${my}px)`;
+      }
+      setTimeout(() => { location.href = href; }, REDUCED ? 0 : 180);
+    };
+    const step = (dir) => { const next = tabs[cur + dir]; if (next) leave(next.href, dir > 0 ? -28 : 28, 0); }; // +1: 다음 탭
+    const toWorks = () => { if (scrollHint) leave(scrollHint.href, 0, -28); };
+    // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
+    addEventListener("pageshow", () => { leaving = false; document.body.style.cssText = ""; });
+
+    /* 터치 (모바일) */
+    let t0 = null;
     addEventListener("touchstart", (e) => {
       t0 = null;
-      if (!mobileMQ.matches || e.touches.length !== 1) return;
-      if (html.classList.contains("menu-open") || html.classList.contains("modal-open")) return;
+      if (e.touches.length !== 1 || blocked()) return;
       if (e.target.closest(interactive) || scrollsX(e.target)) return;
       const t = e.touches[0];
       t0 = { x: t.clientX, y: t.clientY, time: Date.now() };
@@ -203,18 +222,57 @@
       const t = e.changedTouches[0];
       const dx = t.clientX - t0.x, dy = t.clientY - t0.y, dt = Date.now() - t0.time;
       t0 = null;
-      if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6 || dt > 700) return; // 가로로 빠르게 민 경우만
-      const next = tabs[cur + (dx < 0 ? 1 : -1)]; // 왼쪽으로 밀면 다음 탭
-      if (!next) return;
-      if (!REDUCED) {
-        document.body.style.transition = "opacity 0.18s ease, transform 0.18s ease";
-        document.body.style.opacity = "0";
-        document.body.style.transform = `translateX(${dx < 0 ? -28 : 28}px)`;
-      }
-      setTimeout(() => { location.href = next.href; }, REDUCED ? 0 : 160);
+      if (dt > 700) return;
+      if (Math.abs(dx) >= 70 && Math.abs(dx) >= Math.abs(dy) * 1.6) step(dx < 0 ? 1 : -1); // 왼쪽으로 밀면 다음 탭
+      else if (scrollHint && dy <= -70 && Math.abs(dy) >= Math.abs(dx) * 1.6) toWorks(); // 홈: 위로 쓸어올리면 Works
     }, { passive: true });
-    // 뒤로가기(bfcache)로 돌아왔을 때 페이지가 투명한 채로 남지 않게
-    addEventListener("pageshow", () => { document.body.style.cssText = ""; });
+
+    /* 휠 / 트랙패드 (데스크톱) */
+    let acc = 0, accAt = 0;
+    addEventListener("wheel", (e) => {
+      if (leaving || blocked() || e.ctrlKey) return;
+      const ax = Math.abs(e.deltaX), ay = Math.abs(e.deltaY);
+      if (ax > ay * 1.5) {
+        if (e.target.closest(interactive) || scrollsX(e.target)) return;
+        const now = Date.now();
+        if (now - accAt > 250) acc = 0; // 관성 스크롤이 이어지는 동안만 누적
+        accAt = now;
+        acc += e.deltaX;
+        if (Math.abs(acc) > 70) { step(acc > 0 ? 1 : -1); acc = 0; }
+      } else if (scrollHint && e.deltaY > 12 && ay > ax) {
+        toWorks();
+      }
+    }, { passive: true });
+
+    /* 키보드 (홈) */
+    if (scrollHint) {
+      addEventListener("keydown", (e) => {
+        if (!["ArrowDown", "PageDown", " "].includes(e.key) || e.target.closest("input, textarea, select, button, a")) return;
+        e.preventDefault();
+        toWorks();
+      });
+      scrollHint.addEventListener("click", (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        toWorks();
+      });
+    }
+
+    /* 마우스 드래그 (홈 전용 — 다른 페이지는 글 선택과 겹치므로 제외) */
+    if (document.body.classList.contains("page-home")) {
+      let d0 = null;
+      addEventListener("pointerdown", (e) => {
+        d0 = null;
+        if (e.pointerType !== "mouse" || e.button !== 0 || blocked() || e.target.closest("a, button, " + interactive)) return;
+        d0 = { x: e.clientX, y: e.clientY, time: Date.now() };
+      });
+      addEventListener("pointerup", (e) => {
+        if (!d0) return;
+        const dx = e.clientX - d0.x, dy = e.clientY - d0.y, dt = Date.now() - d0.time;
+        d0 = null;
+        if (dt < 900 && Math.abs(dx) >= 90 && Math.abs(dx) >= Math.abs(dy) * 1.6) step(dx < 0 ? 1 : -1);
+      });
+    }
   }
 
   /* 7-f) Contact: 문의 폼 → FormSubmit 으로 내 메일에 전달 */
@@ -271,33 +329,6 @@
         submit.textContent = "보내기";
         submit.disabled = false;
       }
-    });
-  }
-
-  /* 7-g) 홈: 아래로 스크롤(휠 · ↓ · PageDown · Space)하거나 오른쪽 SCROLL 을 누르면 Works 로 이동 */
-  const scrollHint = document.querySelector(".scroll-hint");
-  if (scrollHint) {
-    let going = false;
-    const go = () => {
-      if (going) return;
-      going = true;
-      if (!REDUCED) {
-        document.body.style.transition = "opacity 0.22s ease, transform 0.22s ease";
-        document.body.style.opacity = "0";
-        document.body.style.transform = "translateY(-28px)";
-      }
-      setTimeout(() => { location.href = scrollHint.href; }, REDUCED ? 0 : 200);
-    };
-    addEventListener("wheel", (e) => { if (e.deltaY > 12) go(); }, { passive: true });
-    addEventListener("keydown", (e) => {
-      if (!["ArrowDown", "PageDown", " "].includes(e.key) || e.target.closest("input, textarea, select, button, a")) return;
-      e.preventDefault();
-      go();
-    });
-    scrollHint.addEventListener("click", (e) => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-      e.preventDefault();
-      go();
     });
   }
 
